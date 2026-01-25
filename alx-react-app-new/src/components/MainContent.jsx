@@ -11,8 +11,7 @@ const MainContent = () => {
       }}
     >
       <p style={{ fontSize: "1.1em", lineHeight: "1.6", color: "#333" }}>
-        Welcome to the main content area. Here you can showcase your favorite
-        cities and travel experiences.
+        I love to visit New York, Paris, and Tokyo.
       </p>
     </main>
   );

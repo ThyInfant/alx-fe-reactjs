@@ -7,14 +7,6 @@ const EditRecipeForm = ({ recipe }) => {
   const [title, setTitle] = useState(recipe.title);
   const [description, setDescription] = useState(recipe.description);
 
-  const handleUpdate = () => {
-    updateRecipe({
-      id: recipe.id,
-      title,
-      description,
-    });
-  };
-
   return (
     <div>
       <h3>Edit Recipe</h3>
@@ -30,7 +22,17 @@ const EditRecipeForm = ({ recipe }) => {
         onChange={(e) => setDescription(e.target.value)}
       />
 
-      <button onClick={handleUpdate}>Update</button>
+      <button
+        onClick={() =>
+          updateRecipe({
+            id: recipe.id,
+            title: title,
+            description: description,
+          })
+        }
+      >
+        Update
+      </button>
     </div>
   );
 };

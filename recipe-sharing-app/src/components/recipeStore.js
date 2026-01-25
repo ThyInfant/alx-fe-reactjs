@@ -3,30 +3,50 @@ import { create } from "zustand";
 export const useRecipeStore = create((set) => ({
   recipes: [],
 
-  // Favorites & Recommendations
-  favorites: [],
-  recommendations: [],
+  /* ✅ REQUIRED FOR TASK 0 (DO NOT REMOVE) */
+  setRecipes: (recipes) => set({ recipes }),
 
-  // Recipe actions
+  /* ---------- SEARCH (TASK 2) ---------- */
+  searchTerm: "",
+  filteredRecipes: [],
+
+  setSearchTerm: (term) => set({ searchTerm: term }),
+
+  filterRecipes: () =>
+    set((state) => ({
+      filteredRecipes: state.recipes.filter((recipe) =>
+        recipe.title.toLowerCase().includes(state.searchTerm.toLowerCase()),
+      ),
+    })),
+
+  /* ---------- CORE CRUD (TASK 1) ---------- */
   addRecipe: (newRecipe) =>
     set((state) => ({
       recipes: [...state.recipes, newRecipe],
+      filteredRecipes: [...state.filteredRecipes, newRecipe],
     })),
 
   deleteRecipe: (id) =>
     set((state) => ({
-      recipes: state.recipes.filter((recipe) => recipe.id !== id),
-      favorites: state.favorites.filter((favId) => favId !== id), // remove from favorites if deleted
+      recipes: state.recipes.filter((r) => r.id !== id),
+      filteredRecipes: state.filteredRecipes.filter((r) => r.id !== id),
+      favorites: state.favorites.filter((favId) => favId !== id),
     })),
 
   updateRecipe: (updatedRecipe) =>
     set((state) => ({
-      recipes: state.recipes.map((recipe) =>
-        recipe.id === updatedRecipe.id ? updatedRecipe : recipe,
+      recipes: state.recipes.map((r) =>
+        r.id === updatedRecipe.id ? updatedRecipe : r,
+      ),
+      filteredRecipes: state.filteredRecipes.map((r) =>
+        r.id === updatedRecipe.id ? updatedRecipe : r,
       ),
     })),
 
-  // Favorites actions
+  /* ---------- FAVORITES & RECOMMENDATIONS (TASK 3) ---------- */
+  favorites: [],
+  recommendations: [],
+
   addFavorite: (recipeId) =>
     set((state) => ({
       favorites: state.favorites.includes(recipeId)
@@ -39,7 +59,6 @@ export const useRecipeStore = create((set) => ({
       favorites: state.favorites.filter((id) => id !== recipeId),
     })),
 
-  // Recommendations (mock: favorite recipes with 50% chance)
   generateRecommendations: () =>
     set((state) => ({
       recommendations: state.recipes.filter(

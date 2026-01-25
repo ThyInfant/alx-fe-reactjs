@@ -7,9 +7,7 @@ const EditRecipeForm = ({ recipe }) => {
   const [title, setTitle] = useState(recipe.title);
   const [description, setDescription] = useState(recipe.description);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
+  const handleUpdate = () => {
     updateRecipe({
       id: recipe.id,
       title,
@@ -18,7 +16,7 @@ const EditRecipeForm = ({ recipe }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div>
       <h3>Edit Recipe</h3>
 
       <input
@@ -32,8 +30,8 @@ const EditRecipeForm = ({ recipe }) => {
         onChange={(e) => setDescription(e.target.value)}
       />
 
-      <button type="submit">Update</button>
-    </form>
+      <button onClick={handleUpdate}>Update</button>
+    </div>
   );
 };
 

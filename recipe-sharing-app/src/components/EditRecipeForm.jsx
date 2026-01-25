@@ -19,13 +19,7 @@ export default function EditRecipeForm({ recipe }) {
         onChange={(e) => setDescription(e.target.value)}
       />
       <button
-        onClick={() =>
-          updateRecipe({
-            id: recipe.id,
-            title: title,
-            description: description,
-          })
-        }
+        onClick={() => updateRecipe({ id: recipe.id, title, description })}
       >
         Update
       </button>

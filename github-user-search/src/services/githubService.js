@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const BASE_URL = "https://api.github.com";
+const URL = "https://api.github.com/search/users?q";
 
 // Advanced search function
 export const fetchAdvancedUsers = async ({

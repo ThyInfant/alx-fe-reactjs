@@ -1,66 +1,135 @@
 import { useState } from "react";
-import { fetchUserData } from "../services/githubService";
+import { fetchAdvancedUsers } from "../services/githubService";
+import UserCard from "./UserCard";
 
 function Search() {
-  const [username, setUsername] = useState("");
-  const [user, setUser] = useState(null);
+  const [form, setForm] = useState({
+    username: "",
+    location: "",
+    minRepos: "",
+  });
+
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-    if (!username.trim()) return;
+  const handleSearch = async (e, newPage = 1) => {
+    e?.preventDefault();
+
+    if (!form.username && !form.location && !form.minRepos) {
+      setError(true);
+      return;
+    }
+
+    if (newPage === 1) setUsers([]);
 
     setLoading(true);
     setError(false);
-    setUser(null);
 
     try {
-      const data = await fetchUserData(username);
-      setUser(data);
-    } catch (err) {
+      const data = await fetchAdvancedUsers({ ...form, page: newPage });
+
+      if (!data.items || data.items.length === 0) {
+        setError(true);
+        setHasMore(false);
+      } else {
+        if (newPage === 1) {
+          setUsers(data.items);
+        } else {
+          setUsers((prev) => [...prev, ...data.items]);
+        }
+        setHasMore(data.items.length === 10);
+        setPage(newPage);
+      }
+    } catch {
       setError(true);
+      setHasMore(false);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ marginTop: "2rem" }}>
-      <form onSubmit={handleSubmit}>
+    <div className="mt-8 max-w-3xl mx-auto">
+      {/* 🔍 Search Form */}
+      <form
+        onSubmit={handleSearch}
+        className="bg-gray-100 dark:bg-gray-800 shadow-md rounded-lg p-6 space-y-4"
+      >
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+          Advanced GitHub User Search
+        </h2>
+
         <input
           type="text"
-          placeholder="Enter GitHub username..."
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          style={{ padding: "0.5rem", width: "250px" }}
+          name="username"
+          placeholder="Username"
+          value={form.username}
+          onChange={handleChange}
+          className="w-full border border-gray-300 dark:border-gray-600 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <button type="submit" style={{ marginLeft: "10px", padding: "0.5rem" }}>
+
+        <input
+          type="text"
+          name="location"
+          placeholder="Location (e.g. Ethiopia)"
+          value={form.location}
+          onChange={handleChange}
+          className="w-full border border-gray-300 dark:border-gray-600 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+
+        <input
+          type="number"
+          name="minRepos"
+          placeholder="Minimum repositories"
+          value={form.minRepos}
+          onChange={handleChange}
+          className="w-full border border-gray-300 dark:border-gray-600 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+        >
           Search
         </button>
       </form>
 
-      {/* Loading State */}
-      {loading && <p>Loading...</p>}
+      {/* ⏳ Loading */}
+      {loading && (
+        <p className="mt-4 text-center text-gray-700 dark:text-gray-200">
+          Loading...
+        </p>
+      )}
 
-      {/* Error State */}
-      {error && <p>Looks like we cant find the user</p>}
+      {/* ❌ Error */}
+      {error && (
+        <p className="mt-4 text-center text-red-500">
+          Looks like we cant find the user
+        </p>
+      )}
 
-      {/* Success State */}
-      {user && (
-        <div style={{ marginTop: "1.5rem" }}>
-          <img
-            src={user.avatar_url}
-            alt={user.login}
-            width="120"
-            style={{ borderRadius: "50%" }}
-          />
-          <h2>{user.name || user.login}</h2>
-          <a href={user.html_url} target="_blank" rel="noreferrer">
-            View GitHub Profile
-          </a>
-        </div>
+      {/* 👤 Results */}
+      <div className="mt-6 space-y-4">
+        {users.map((user) => (
+          <UserCard key={user.id} username={user.login} />
+        ))}
+      </div>
+
+      {/* ➕ Load More */}
+      {hasMore && !loading && (
+        <button
+          onClick={(e) => handleSearch(e, page + 1)}
+          className="mt-6 w-full bg-gray-800 text-white py-2 rounded hover:bg-gray-900 transition"
+        >
+          Load More
+        </button>
       )}
     </div>
   );

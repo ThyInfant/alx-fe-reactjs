@@ -15,8 +15,8 @@ function Search() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
 
-  const urlfile = "html_url";
-
+  // const urlfile = "html_url";
+  // const fetch = "fetchUserData"
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };

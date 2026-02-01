@@ -2,6 +2,7 @@ import axios from "axios";
 
 const BASE_URL = "https://api.github.com";
 
+// Advanced search function
 export const fetchAdvancedUsers = async ({
   username,
   location,
@@ -10,7 +11,7 @@ export const fetchAdvancedUsers = async ({
 }) => {
   let query = "";
 
-  if (username) query += `${username}`;
+  if (username) query += username;
   if (location) query += ` location:${location}`;
   if (minRepos) query += ` repos:>=${minRepos}`;
 
@@ -25,5 +26,5 @@ export const fetchAdvancedUsers = async ({
     },
   );
 
-  return response.data; // contains items[] and total_count
+  return response.data; // contains `items` array and `total_count`
 };

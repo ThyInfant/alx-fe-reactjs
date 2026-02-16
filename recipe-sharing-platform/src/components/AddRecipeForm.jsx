@@ -9,18 +9,22 @@ export default function AddRecipeForm() {
   // State for errors
   const [errors, setErrors] = useState({});
 
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Validation
+  // ✅ Validation function
+  const validate = () => {
     const newErrors = {};
     if (!title.trim()) newErrors.title = "Title is required";
     if (!ingredients.trim() || ingredients.split(",").length < 2)
       newErrors.ingredients =
         "Enter at least two ingredients, separated by commas";
-    if (!steps.trim()) newErrors.steps = "Preparation steps are required"; // renamed
+    if (!steps.trim()) newErrors.steps = "Preparation steps are required";
+    return newErrors;
+  };
 
+  // Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const newErrors = validate(); // call validate
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
@@ -29,7 +33,7 @@ export default function AddRecipeForm() {
         id: Date.now(), // Temporary unique ID
         title,
         ingredients: ingredients.split(",").map((i) => i.trim()),
-        steps: steps.split("\n").map((i) => i.trim()), // renamed
+        steps: steps.split("\n").map((i) => i.trim()),
       };
 
       console.log("New Recipe Submitted:", newRecipe);
@@ -37,7 +41,7 @@ export default function AddRecipeForm() {
       // Reset form
       setTitle("");
       setIngredients("");
-      setSteps(""); // reset steps
+      setSteps("");
       setErrors({});
       alert("Recipe submitted successfully!");
     }

@@ -1,14 +1,31 @@
+// src/components/RecipeDetail.jsx
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import data from "../data.json";
 
 export default function RecipeDetail() {
   const { id } = useParams();
-  const recipe = data.find((item) => item.id === parseInt(id));
 
+  // State for the selected recipe
+  const [recipe, setRecipe] = useState(null);
+
+  // ✅ useEffect to load recipe on mount
+  useEffect(() => {
+    const found = data.find((item) => item.id === parseInt(id));
+    setRecipe(found || null);
+  }, [id]);
+
+  // Handle recipe not found
   if (!recipe) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <h2 className="text-2xl font-bold">Recipe not found</h2>
+        <Link
+          to="/"
+          className="ml-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+        >
+          Back to Home
+        </Link>
       </div>
     );
   }
@@ -16,12 +33,14 @@ export default function RecipeDetail() {
   return (
     <div className="min-h-screen bg-gray-50 px-6 py-10">
       <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
+        {/* Recipe Image */}
         <img
           src={recipe.image}
           alt={recipe.title}
           className="w-full h-72 object-cover"
         />
 
+        {/* Recipe Details */}
         <div className="p-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-6">
             {recipe.title}

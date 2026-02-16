@@ -4,7 +4,7 @@ export default function AddRecipeForm() {
   // State for form fields
   const [title, setTitle] = useState("");
   const [ingredients, setIngredients] = useState("");
-  const [instructions, setInstructions] = useState("");
+  const [steps, setSteps] = useState(""); // renamed from instructions
 
   // State for errors
   const [errors, setErrors] = useState({});
@@ -19,8 +19,7 @@ export default function AddRecipeForm() {
     if (!ingredients.trim() || ingredients.split(",").length < 2)
       newErrors.ingredients =
         "Enter at least two ingredients, separated by commas";
-    if (!instructions.trim())
-      newErrors.instructions = "Instructions are required";
+    if (!steps.trim()) newErrors.steps = "Preparation steps are required"; // renamed
 
     setErrors(newErrors);
 
@@ -30,7 +29,7 @@ export default function AddRecipeForm() {
         id: Date.now(), // Temporary unique ID
         title,
         ingredients: ingredients.split(",").map((i) => i.trim()),
-        instructions: instructions.split("\n").map((i) => i.trim()),
+        steps: steps.split("\n").map((i) => i.trim()), // renamed
       };
 
       console.log("New Recipe Submitted:", newRecipe);
@@ -38,7 +37,7 @@ export default function AddRecipeForm() {
       // Reset form
       setTitle("");
       setIngredients("");
-      setInstructions("");
+      setSteps(""); // reset steps
       setErrors({});
       alert("Recipe submitted successfully!");
     }
@@ -96,24 +95,24 @@ export default function AddRecipeForm() {
           )}
         </div>
 
-        {/* Instructions */}
+        {/* Steps */}
         <div className="mb-6">
           <label className="block text-gray-700 font-semibold mb-2">
             Preparation Steps (each step on a new line)
           </label>
           <textarea
-            value={instructions}
-            onChange={(e) => setInstructions(e.target.value)}
+            value={steps}
+            onChange={(e) => setSteps(e.target.value)}
             className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
-              errors.instructions
+              errors.steps
                 ? "border-red-500 ring-red-200"
                 : "border-gray-300 ring-blue-200"
             }`}
             placeholder="Step 1: ...&#10;Step 2: ..."
             rows={5}
           />
-          {errors.instructions && (
-            <p className="text-red-500 text-sm mt-1">{errors.instructions}</p>
+          {errors.steps && (
+            <p className="text-red-500 text-sm mt-1">{errors.steps}</p>
           )}
         </div>
 

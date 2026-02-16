@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+
+// Import mock data
+import data from "../data.json";
 
 export default function HomePage() {
+  // State for recipes
   const [recipes, setRecipes] = useState([]);
 
+  // Load recipes on component mount
   useEffect(() => {
-    fetch("/src/data.json")
-      .then((response) => response.json())
-      .then((data) => setRecipes(data))
-      .catch((error) => console.error("Error loading recipes:", error));
+    setRecipes(data); // data must be an array
   }, []);
 
   return (
@@ -19,21 +22,24 @@ export default function HomePage() {
       {/* Responsive Grid */}
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {recipes.map((recipe) => (
-          <div
+          <Link
             key={recipe.id}
-            className="bg-white rounded-2xl shadow-md hover:shadow-xl hover:scale-105 transition-transform duration-300 overflow-hidden"
+            to={`/recipe/${recipe.id}`}
+            className="bg-white rounded-2xl shadow-md hover:shadow-xl hover:scale-105 transition-transform duration-300 overflow-hidden block"
           >
+            {/* Recipe Image */}
             <img
               src={recipe.image}
               alt={recipe.title}
               className="w-full h-48 object-cover"
             />
 
+            {/* Card Content */}
             <div className="p-5">
               <h2 className="text-xl font-semibold mb-2">{recipe.title}</h2>
               <p className="text-gray-600 text-sm">{recipe.summary}</p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

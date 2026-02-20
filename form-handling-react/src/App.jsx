@@ -1,4 +1,4 @@
-import FormikForm from "../components/formikForm";
+import FormikForm from "./components/formikForm.jsx";
 
 function App() {
   return (

@@ -1,4 +1,4 @@
-import React from "react";
+import { describe, it, expect } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import TodoList from "../components/TodoList";
 import "@testing-library/jest-dom";
